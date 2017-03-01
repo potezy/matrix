@@ -6,10 +6,6 @@ MAX_COLOR = 255
 --object to store color
 Color = {red = 0, green = 0 , blue = 0}
 
---object for a point
-Point = {xcor = 0, ycor = 0 , zcor = 0, s = 0}
-
-
 --constructors 
 function Color:new ( r , g ,b )
 	 local color = {}
@@ -20,20 +16,6 @@ function Color:new ( r , g ,b )
 	 self.blue = b
 	 return color
 end
-
-function Point:new(x , y , z , s)
-	 local point = {}
-	 setmetatable(point , self)
-	 self.__index = self
-	 self.xcor = x
-	 self.ycor = y
-	 self.zcor = z
-	 self.s = s
-	 return point
-end
-
-
-
 
 --create the array to store pixels 
 board = {}
@@ -55,9 +37,8 @@ function clear_screen(s)
 	 end
 end
 
---plot with 0,0 at top left, plots starting from bottom left
 function plot(s , c , x , y)
-	 local newy = YRES - 1 - y
+	 local newy = y
 	 if(x >=0 and x<XRES and newy >=0 and newy<YRES) then
 	      s[x][newy].red = c.red
 	      s[x][newy].green = c.green
@@ -165,7 +146,6 @@ function draw_line(x0 , y0 , x1, y1 , c , s)
 		    end
 		    x = x +1
 		    D = D + 2*A
-
  	    end
 	 end
 	 if (oct == 2) then --line is in octant 2
@@ -303,13 +283,21 @@ function addEdge(pMatrix, x1,y1,z1,x2,y2,z2)
 end
 
 
-function edgeMaker()
+function edgeMaker(matrix)
 	 for x = 0, 499 do
 	     for y = 0, 499 do
-	     	 if((x-250)^2 == y) then addEdge(pMatrix, 250,250,0,x,y,0) end
-		 end
-		 end
+	     	 if((x-250)^2 == y) then addEdge(matrix, 250,250,0,x,y,0) end
+       	     end
+	end
+	addEdge(matrix, 0,0,0,250,500,0)
+	addEdge(matrix, 250,250,0,0,500,0)
+ 	addEdge(matrix,	250,250,0,500,0,0)
+	addEdge(matrix, 250,250,0,500,500,0)
 
+	addEdge(matrix, 250,250,0,375,0,0)	
+	addEdge(matrix, 250,250,0,375,500,0)
+	addEdge(matrix, 250,250,0,500,375,0)
+	addEdge(matrix, 250,250,0,0,375,0)
 end
 
 matrix1 = {{1,2,3},{4,5,6}}
@@ -331,7 +319,7 @@ printMatrix(matrix3)
 
 function main()
 	 clear_screen(board)
-	 edgeMaker()
+	 edgeMaker(pMatrix)
 	 draw(board, pMatrix)
 	 save_ppm(board)
 end
