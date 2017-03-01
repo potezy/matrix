@@ -6,7 +6,11 @@ MAX_COLOR = 255
 --object to store color
 Color = {red = 0, green = 0 , blue = 0}
 
---constructor
+--object for a point
+Point = {xcor = 0, ycor = 0 , zcor = 0, s = 0}
+
+
+--constructors 
 function Color:new ( r , g ,b )
 	 local color = {}
 	 setmetatable(color , self)
@@ -16,6 +20,20 @@ function Color:new ( r , g ,b )
 	 self.blue = b
 	 return color
 end
+
+function Point:new(x , y , z , s)
+	 local point = {}
+	 setmetatable(point , self)
+	 self.__index = self
+	 self.xcor = x
+	 self.ycor = y
+	 self.zcor = z
+	 self.s = s
+	 return point
+end
+
+
+
 
 --create the array to store pixels 
 board = {}
@@ -197,43 +215,118 @@ end
 
 
 
-function draw(s)
-	 for i = 0 , 499  do
-	     for k = 0, 499 do
-	     	 if(k==(i-250)^2) then
-			local pixel = Color:new(i%256 , k%256 , 100)
-		 	draw_line(0 , 0 , i , k , pixel , s)
-			draw_line(0,0,k,i,pixel,s)
-		 end
-	      end
+function draw(board, pMatrix)
+	 for i = 1 , sizeOf(pMatrix[1]) , 2 do
+	     local x1 = pMatrix[1][i]
+	     local x2 = pMatrix[1][i+1]
+	     local y1 = pMatrix[2][i]
+	     local y2 = pMatrix[2][i+1]
+	     print(x1,y1,x2,y2)
+	     color = Color:new((x1+x2)%255, (y1+y2)%255, (x1+x2+y1+y2)%255)
+	     draw_line(x1,y1,x2,y2,color,board)
 	 end
 end
 
+--here begins the functions for matrix things
+
+--prints the matrix
+
+function printMatrix(matrix)
+	 s = ""
+	 for i , v in ipairs(matrix) do
+	      for k , r  in ipairs(v) do 
+	      	  s = s .. matrix[i][k] .. " "
+	      end
+	      s = s .. "\n"
+	 end
+	 print(s) 
+end
+
+--returns the number of data entries in a matrix
+function sizeOf(matrix)
+	 local size = 0
+	 for _ in pairs(matrix) do size = size + 1 end
+	 return size
+end
+
+function scalar(int , matrix)
+	 for i , v in ipairs(matrix) do
+	     for k , r in ipairs(v) do
+	     	 matrix[i][k] = int * matrix[i][k]
+             end
+	 end
+	 return matrix	
+end
+
+function identify(matrix)
+	 side = sizeOf(matrix)
+	 for i = 1, side do
+	     for j = 1, side do
+	     	 if (i == j) then matrix[i][j] = 1
+		 else matrix[i][j] = 0 end     
+	     end
+	 end
+	 return matrix
+end
+
+function matrixMult(matrix1 , matrix2)
+	 local tempMatrix = {}
+	 for i = 1, sizeOf(matrix1) do
+	     tempMatrix[i] = {}
+	     for k = 1, sizeOf(matrix2[1]) do
+	     	 tempMatrix[i][k] = 0
+	     end
+	 end
+	 for i = 1, sizeOf(matrix1) do
+	     for k = 1 , sizeOf(matrix2[1]) do
+	     	 for j = 1, sizeOf(matrix1[1]) do
+		     --print(j)
+		     tempMatrix[i][k] =  tempMatrix[i][k] + matrix1[i][j] * matrix2[j][k]
+		     end
+		  end
+	end
+	return tempMatrix	 
+end
+
+pMatrix = {{},{},{},{}}
+
+function addPoint(pMatrix, x,y,z)
+	 table.insert(pMatrix[1],x) 	 
+	 table.insert(pMatrix[2],y)
+	 table.insert(pMatrix[3],z)
+	 table.insert(pMatrix[4],1)
+end
+
+function addEdge(pMatrix, x1,y1,z1,x2,y2,z2)
+	 addPoint(pMatrix,x1,y1,z1)
+	 addPoint(pMatrix,x2,y2,z2)
+end
+
+addEdge(pMatrix,0,0,0,250,250,0)
+printMatrix(pMatrix)
+
+
+matrix1 = {{1,2,3},{4,5,6}}
+matrix2 = {{7,8},{9,10},{11,12}}
+matrix3 = matrixMult(matrix1, matrix2)
+
+print("matrix1 is:\n")
+printMatrix(matrix1, "\n")
+print("matrix2 is:\n")
+printMatrix(matrix2, "\n")
+print("the matrix resulting from matrix1 x matrix2, matrix3, is:\n")
+printMatrix(matrix3)
+print("the matrix resulting from 2 x matrix3 is:\n")
+printMatrix(scalar(2,matrix3))
+print("now, to convert matrix3 into the identity matrix:\n")
+matrix3 = identify(matrix3)
+printMatrix(matrix3)
+
+
 function main()
 	 clear_screen(board)
-	 draw(board)
+	 draw(board, pMatrix)
 	 save_ppm(board)
 end
 main()
---[[
-pixel = Color:new(100,50,10)
-clear_screen(board)
-draw_line(100,100,100,150,pixel, board)
-draw_line(100,100,200,100,pixel,board)
-draw_line(0,0,200,100,pixel,board)
-draw_line(250,250,400,300,pixel,board)
-draw_line(250,250,300,400,pixel,board)
-draw_line(250,250,200,400,pixel,board)
-draw_line(250,250, 250,400,pixel,board)
-draw_line(250,250,100,200,pixel,board)
-draw_line(250,250,200,100,pixel,board)
-draw_line(250,250,300,100,pixel,board)
-draw_line(250,250,400,200,pixel,board)
-draw_line(20,50,300,490,pixel,board)
-draw_line(0,0,0,400,pixel,board)
-draw_line(150,0,150,450,pixel,board)
-draw_line(250,250,300,200,pixel,board)
-draw_line(250,250,400,140,pixel,board)
-save_ppm(board)
-]]--
 print("file is saved as line.ppm\n")
