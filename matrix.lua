@@ -221,7 +221,7 @@ function draw(board, pMatrix)
 	     local x2 = pMatrix[1][i+1]
 	     local y1 = pMatrix[2][i]
 	     local y2 = pMatrix[2][i+1]
-	     print(x1,y1,x2,y2)
+	     --print(x1,y1,x2,y2)
 	     color = Color:new((x1+x2)%255, (y1+y2)%255, (x1+x2+y1+y2)%255)
 	     draw_line(x1,y1,x2,y2,color,board)
 	 end
@@ -302,9 +302,15 @@ function addEdge(pMatrix, x1,y1,z1,x2,y2,z2)
 	 addPoint(pMatrix,x2,y2,z2)
 end
 
-addEdge(pMatrix,0,0,0,250,250,0)
-printMatrix(pMatrix)
 
+function edgeMaker()
+	 for x = 0, 499 do
+	     for y = 0, 499 do
+	     	 if((x-250)^2 == y) then addEdge(pMatrix, 250,250,0,x,y,0) end
+		 end
+		 end
+
+end
 
 matrix1 = {{1,2,3},{4,5,6}}
 matrix2 = {{7,8},{9,10},{11,12}}
@@ -325,6 +331,7 @@ printMatrix(matrix3)
 
 function main()
 	 clear_screen(board)
+	 edgeMaker()
 	 draw(board, pMatrix)
 	 save_ppm(board)
 end
