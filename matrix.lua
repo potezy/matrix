@@ -104,13 +104,23 @@ end
 
 --function to draw line
 function draw_line(x0 , y0 , x1, y1 , c , s)
+	 if (x0>x1) then
+	    xt = x0 	   
+	    yt = y0
+	    x0 = x1
+	    y0 = y1
+	    x1 = xt
+	    y1 = yt
+	 end
 	 x = x0
 	 y = y0
-	 oct = oct_check(x0, y0 , x1, y1)
-	 if (oct == 0) then draw_line(x1,y1,x0,y0,c,s) end
-	 if (oct == 9) then
-	    if (y1 > y) then
-	       while (y1 > y) do
+	 A = 2*(y1-y0)
+	 B = -2*(x1 - x0)
+
+	    if (abs(x1-x0) >= abs(y1-y0) then
+	       if (A > 0) then
+	       D = A + B/2
+	       while (x <x1) do
 	       	     plot(s,c,x,y)
 		     y = y +1
 	       end
@@ -120,8 +130,8 @@ function draw_line(x0 , y0 , x1, y1 , c , s)
 		       y = y-1
 		 end
 	    end
-	 end
-	 if (oct == 10) then
+	 
+	 
 	    if ( x1 > x) then
 	       while ( x1 > x) do
 	       	     plot(s , c , x , y)
@@ -133,8 +143,8 @@ function draw_line(x0 , y0 , x1, y1 , c , s)
 		      x = x -1
 		end
 	    end
-	 end   	     
-	 if (oct == 1) then --line is in octant 1
+	    	     
+	 
 	    A = y1 - y
 	    B = -1 * (x1 - x)
 	    D = 2*A + B
@@ -147,10 +157,7 @@ function draw_line(x0 , y0 , x1, y1 , c , s)
 		    x = x +1
 		    D = D + 2*A
  	    end
-	 end
-	 if (oct == 2) then --line is in octant 2
-	    A = y1 - y
-	    B = -1  * (x1-x)
+	 
 	    D = 2*B + A
 	    while( y < y1) do
 	    	   plot(s , c , x ,y)
@@ -161,10 +168,7 @@ function draw_line(x0 , y0 , x1, y1 , c , s)
 		   y = y +1
 		   D = D + 2*B
             end
-	 end
-	 if (oct == 8) then --line is in octant 8
-	    A = y1 -y
-	    B = -1 * (x1 - x)
+	 
 	    D = 2*A -B
 	    while(x < x1) do
 	    	    plot(s , c , x , y )
@@ -175,11 +179,7 @@ function draw_line(x0 , y0 , x1, y1 , c , s)
 		    x = x+1
 		    D = D + 2*A
 	    end 
-	 end 
-	 
-	 if (oct == 7 ) then --line is in octant 7
-	    A = y1 - y
-	    B = -1 * ( x1 - x)
+	
 	    D = A - 2*B
 	    while( y > y1) do
 	    	   plot(s , c , x , y)
@@ -190,7 +190,7 @@ function draw_line(x0 , y0 , x1, y1 , c , s)
 		   y = y -1
 		   D = D -2*B
 	    end
-	 end	    
+	 	    
 end
 
 
