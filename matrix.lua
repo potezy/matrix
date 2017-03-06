@@ -116,81 +116,59 @@ function draw_line(x0 , y0 , x1, y1 , c , s)
 	 y = y0
 	 A = 2*(y1-y0)
 	 B = -2*(x1 - x0)
-
-	    if (abs(x1-x0) >= abs(y1-y0) then
+	    if (math.abs(x1-x0) >= math.abs(y1-y0)) then
 	       if (A > 0) then
-	       D = A + B/2
-	       while (x <x1) do
-	       	     plot(s,c,x,y)
-		     y = y +1
+	       	  D = A + B/2
+	       	  while (x <x1) do
+	       	     	plot(s,c,x,y)
+			if ( D >0) then	
+			   y = y +1  
+		     	   D = D + B
+			end
+			x = x +1
+			D = D + A
+		  end
+		  plot(s , c , x , y)
+	       else d = A - B/2
+	       	    while (x < x1) do
+		    	  plot(s,c,x,y)
+			  if (D<0) then
+			     y = y -1
+			     D = D - B
+			  end
+			  x = x +1
+			  D = D + A
+		    end
+		    plot(s,c,x,y)
 	       end
-	    else 
-	    	 while (y>y1) do
-		       plot(s,c,x,y)
-		       y = y-1
-		 end
-	    end
-	 
-	 
-	    if ( x1 > x) then
-	       while ( x1 > x) do
-	       	     plot(s , c , x , y)
-		     x = x + 1
-	      end
 	    else
-		while (x > x1) do
-		      plot(s , c , x , y)
-		      x = x -1
+		if (A > 0) then
+		   D = A/2 + B
+		   while ( y < y1) do
+		   	 plot( s , c , x ,y)
+			 if ( D < 0) then
+			    x = x + 1
+			    D = D + A
+	    	   	 end
+			 y = y +1
+			 D = D + B
+		   end
+	 	   plot( s , c , x ,y)
+		else D = A/2 - B
+		     while (y > y1) do
+		     	   plot(s,c,x,y)
+			   if  (D > 0) then
+			       x = x +1
+			       D = D + A
+			   end
+			   y = y -1
+			   D = D - B
+		     end
+		     plot(s,c,x,y)
 		end
-	    end
-	    	     
-	 
-	    A = y1 - y
-	    B = -1 * (x1 - x)
-	    D = 2*A + B
-	    while(x <= x1) do
-	    	    plot(s , c , x , y)
-		    if( D>0) then
-		    	y = y+1
-			D = D + 2*B
-		    end
-		    x = x +1
-		    D = D + 2*A
- 	    end
-	 
-	    D = 2*B + A
-	    while( y < y1) do
-	    	   plot(s , c , x ,y)
-		   if (D < 0) then
-		      x = x +1
-		      D = D + 2*A
-		   end
-		   y = y +1
-		   D = D + 2*B
-            end
-	 
-	    D = 2*A -B
-	    while(x < x1) do
-	    	    plot(s , c , x , y )
-		    if ( D < 0) then
-		       y = y -1
-		       D = D + 2*B
-		    end
-		    x = x+1
-		    D = D + 2*A
-	    end 
 	
-	    D = A - 2*B
-	    while( y > y1) do
-	    	   plot(s , c , x , y)
-		   if (D > 0) then
-		      x = x +1
-		      D = D + 2*A
-		   end
-		   y = y -1
-		   D = D -2*B
-	    end
-	 	    
+	   end	
+	
 end
 
 
